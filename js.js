@@ -2,14 +2,13 @@ const apiURL = "https://pokeapi.co/api/v2/pokemon/";
 let pokeNumber = 10;
 let html = ``;
 const container = document.getElementById(`container`);
-let pokemonEl = document.createElement("div");
+let pokemonDiv = document.createElement("div");
 
 function getPokemon(i) {
   let pokeURL = apiURL + i;
   fetch(pokeURL)
     .then((response) => response.json())
     .then((data) => {
-      //   console.log(data);
       makeCard(data);
     });
 }
@@ -18,10 +17,13 @@ async function fetchPokemon() {
     await getPokemon(i);
   }
 }
+
+
 function makeCard(data) {
   let name = data.name;
   let number = data.id;
   let pic = data.sprites.front_default;
+  let pic2 = `https://veekun.com/dex/media/pokemon/sugimori/${number}.png`;
   console.log(number);
 
   html += `<div class="poke-card">
@@ -29,14 +31,22 @@ function makeCard(data) {
   <img class="pokeimg" src="${pic}"></img>
   </div>`;
 
-  pokemonEl.innerHTML = html;
-  container.appendChild(pokemonEl);
-  
-  let images = document.querySelectorAll(".poke-card");
+  pokemonDiv.innerHTML = html;
+  let images = document.querySelectorAll(".poke-card img");
   for (let i = 0; i < images.length; i++) {
-    images[i].style.backgroundColor = `red`;
-    console.log(`object`);
+    images[i].setAttribute("data-adaptive-background", 1);
+    // data-adaptive-background se dodaje na sliku da bi jquery plugin radio
   }
+  setBG(images); //za menjanje boja
+  container.appendChild(pokemonDiv);
 }
 
+function setBG(images) {
+  if (images != null) {
+    $.adaptiveBackground.run(); //funkcija iz plugina
+    //ako slika postoji, treba da promeni boju ?
+  } else {
+    console.log(`e`);
+  }
+}
 fetchPokemon();
